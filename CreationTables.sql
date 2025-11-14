@@ -5,6 +5,7 @@ CREATE TABLE Membres
 (
 	MembreID INT IDENTITY(1,1) NOT NULL,
 	Nom NVARCHAR(50) NOT NULL,
+	NomFamille NVARCHAR(50) NOT NULL,
 	Age INT NOT NULL,
 	MembershipID INT NOT NULL,
 	CoachID INT NULL
@@ -13,10 +14,27 @@ CREATE TABLE Membres
 	CONSTRAINT "PK_MembreID"
 	PRIMARY KEY CLUSTERED ("MembreID"),
 
+	CONSTRAINT "FK_MemberShipID"
+	FOREIGN KEY ("MemberShipID")
 
+	REFERENCES "dbo"."MemberShip" ("ID"),
 
+	CONSTRAINT "FK_CoachID"
+	FOREIGN KEY ("CoachID")
+
+	REFERENCES "dbo"."Entraineur" ("EntraineurID")
 	)
 
+
+DROP TABLE IF EXISTS MemberShip
+CREATE TABLE MemberShip
+(	ID INT IDENTITY (1,1) NOT NULL,
+	DateDebutMemberShip DATETIME NOT NULL,
+	FinMemberShip DATETIME NOT NULL
+
+	CONSTRAINT "PK_ID"
+	PRIMARY KEY CLUSTERED ("ID")
+)
 
 
 
@@ -27,8 +45,8 @@ create  table Entraineur
 (
 	EntraineurID int identity(1,1) not null,
 	Nom nvarchar(250) not null,
-	Age int not null,
-	Spécialiter nvarchar(250) not null,
+	DateNais int not null,
+	Spécialiter nvarchar(250) null,
 	Niveau_Expérience nvarchar(250) not null,
 	MembreID int
 
@@ -36,10 +54,10 @@ create  table Entraineur
 	primary key clustered ("EntraineurID"),
 
 	-- Need Xavier to create his class
-	/*constraint "FK_MembreID"
+	constraint "FK_MembreID"
 	foreign key ("MembreID")
-	references "dbo"."Membre" ("MembreID")
-	on delete set cascade */
+	references "dbo"."Membres" ("MembreID")
+	on delete cascade 
 
 )
 
@@ -47,7 +65,6 @@ drop table if exists Cours
 create  table Cours
 (
 	CoursID int identity(1,1)  not null,
-	TypeCours nvarchar(250) not null,
 	NomDeCours nvarchar(250) not null,
 	EntraineurID int  null,
 	TempsCours Datetime unique not null, -- Temps du cours disponible
