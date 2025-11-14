@@ -1,3 +1,26 @@
+-- -création table Xavier
+
+DROP TABLE IF EXISTS Membres
+CREATE TABLE Membres
+(
+	MembreID INT IDENTITY(1,1) NOT NULL,
+	Nom NVARCHAR(50) NOT NULL,
+	Age INT NOT NULL,
+	MembershipID INT NOT NULL,
+	CoachID INT NULL
+
+
+	CONSTRAINT "PK_MembreID"
+	PRIMARY KEY CLUSTERED ("MembreID"),
+
+
+
+	)
+
+
+
+
+--- Création table larcel-- 
 
 drop table if exists Entraineur
 create  table Entraineur
@@ -5,8 +28,8 @@ create  table Entraineur
 	EntraineurID int identity(1,1) not null,
 	Nom nvarchar(250) not null,
 	Age int not null,
-	Sp�cialiter nvarchar(250) not null,
-	Niveau_Exp�rience nvarchar(250) not null,
+	Spécialiter nvarchar(250) not null,
+	Niveau_Expérience nvarchar(250) not null,
 	MembreID int
 
 	constraint "PK_EntraineurID" 
