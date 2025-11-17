@@ -1,97 +1,93 @@
--- -création table Xavier
+USE Gym
+-- SUPPRESSION DES TABLES DANS LE BON ORDRE
+DROP TABLE IF EXISTS EntraineurCours;
+DROP TABLE IF EXISTS Cours;
+DROP TABLE IF EXISTS Entraineur;
+DROP TABLE IF EXISTS Membres;
+DROP TABLE IF EXISTS MemberShip;
 
-DROP TABLE IF EXISTS Membres
+
+------------------------------------
+-- TABLE Membership
+------------------------------------
+CREATE TABLE MemberShip
+(
+    ID INT IDENTITY (1,1) NOT NULL,
+    DateDebutMemberShip DATETIME NOT NULL,
+    FinMemberShip DATETIME NOT NULL,
+
+    CONSTRAINT PK_MembershipID PRIMARY KEY CLUSTERED (ID)
+);
+
+
+------------------------------------
+-- TABLE Membres
+------------------------------------
 CREATE TABLE Membres
 (
-	MembreID INT IDENTITY(1,1) NOT NULL,
-	Nom NVARCHAR(50) NOT NULL,
-	NomFamille NVARCHAR(50) NOT NULL,
-	Age INT NOT NULL,
-	MembershipID INT NOT NULL,
-	CoachID INT NULL
+    MembreID INT IDENTITY(1,1) NOT NULL,
+    Nom NVARCHAR(50) NOT NULL,
+    NomFamille NVARCHAR(50) NOT NULL,
+    MembershipID INT NOT NULL,
+
+    CONSTRAINT PK_MembreID PRIMARY KEY CLUSTERED (MembreID),
+
+    CONSTRAINT FK_Membres_MembershipID
+        FOREIGN KEY (MembershipID)
+        REFERENCES MemberShip(ID)
+        ON DELETE CASCADE 
+);
 
 
-	CONSTRAINT "PK_MembreID"
-	PRIMARY KEY CLUSTERED ("MembreID"),
-
-	CONSTRAINT "FK_MemberShipID"
-	FOREIGN KEY ("MemberShipID")
-
-	REFERENCES "dbo"."MemberShip" ("ID"),
-
-	CONSTRAINT "FK_CoachID"
-	FOREIGN KEY ("CoachID")
-
-	REFERENCES "dbo"."Entraineur" ("EntraineurID")
-	)
-
-
-DROP TABLE IF EXISTS MemberShip
-CREATE TABLE MemberShip
-(	ID INT IDENTITY (1,1) NOT NULL,
-	DateDebutMemberShip DATETIME NOT NULL,
-	FinMemberShip DATETIME NOT NULL
-
-	CONSTRAINT "PK_ID"
-	PRIMARY KEY CLUSTERED ("ID")
-)
-
-
-
---- Création table larcel-- 
-
-drop table if exists Entraineur
-create  table Entraineur
+------------------------------------
+-- TABLE Entraineur
+------------------------------------
+CREATE TABLE Entraineur
 (
-	EntraineurID int identity(1,1) not null,
-	Nom nvarchar(250) not null,
-	DateNais int not null,
-	Spécialiter nvarchar(250) null,
-	Niveau_Expérience nvarchar(250) not null,
-	MembreID int
+    EntraineurID INT IDENTITY(1,1) NOT NULL,
+    Nom NVARCHAR(250) NOT NULL,
+    DateNais DATE NOT NULL,
+    Specialite NVARCHAR(250) NULL,
+    Niveau_Experience NVARCHAR(250) NOT NULL,
+  
 
-	constraint "PK_EntraineurID" 
-	primary key clustered ("EntraineurID"),
+    CONSTRAINT PK_EntraineurID PRIMARY KEY CLUSTERED (EntraineurID),
 
-	-- Need Xavier to create his class
-	constraint "FK_MembreID"
-	foreign key ("MembreID")
-	references "dbo"."Membres" ("MembreID")
-	on delete cascade 
+);
 
-)
 
-drop table if exists Cours
-create  table Cours
+------------------------------------
+-- TABLE Cours
+------------------------------------
+CREATE TABLE Cours
 (
-	CoursID int identity(1,1)  not null,
-	NomDeCours nvarchar(250) not null,
-	EntraineurID int  null,
-	TempsCours Datetime unique not null, -- Temps du cours disponible
+    CoursID INT IDENTITY(1,1) NOT NULL,
+    NomDeCours NVARCHAR(250) NOT NULL,
+    EntraineurID INT NULL,
+    TempsCours DATETIME UNIQUE NOT NULL,
 
-	constraint "PK_CoursID"
-	primary key clustered ("CoursID"),
+    CONSTRAINT PK_CoursID PRIMARY KEY CLUSTERED (CoursID),
 
-	constraint "FK_EntraineurID"
-	foreign key  ("EntraineurID")
-	references "dbo"."Entraineur" ("EntraineurID")
-	on delete cascade -- le cours n'a juste pus de coach , might set to cascade later on
+    CONSTRAINT FK_Cours_EntraineurID
+        FOREIGN KEY (EntraineurID)
+        REFERENCES Entraineur(EntraineurID)
+        ON DELETE SET NULL
+);
 
-)
 
--- Table Relation Coach/Cours
-drop table if exists EntraineurCours
-create table EntraineurCours
+------------------------------------
+-- TABLE Relation Entraineur / Cours
+------------------------------------
+CREATE TABLE EntraineurCours
 (
-	EntraineurID int,
-	CoursID int
+    EntraineurID INT NOT NULL,
+    CoursID INT NOT NULL,
 
-	constraint "FK_Coach_CoachID"
-	foreign key ("EntraineurID")
-	references "dbo"."Entraineur" ("EntraineurID"),
+    CONSTRAINT FK_CoachCours_EntraineurID
+        FOREIGN KEY (EntraineurID)
+        REFERENCES Entraineur(EntraineurID),
 
-	constraint "FK_Cours_CoursID"
-	foreign key ("CoursID")
-	references "dbo"."Cours" ("CoursID")
-
-)
+    CONSTRAINT FK_CoachCours_CoursID
+        FOREIGN KEY (CoursID)
+        REFERENCES Cours(CoursID)
+);
