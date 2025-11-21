@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS MemberShip;
 ------------------------------------
 -- TABLE Membership
 ------------------------------------
+
 CREATE TABLE MemberShip
 (
     ID INT IDENTITY (1,1) NOT NULL,
@@ -23,6 +24,7 @@ CREATE TABLE MemberShip
 ------------------------------------
 -- TABLE Membres
 ------------------------------------
+
 CREATE TABLE Membres
 (
     MembreID INT IDENTITY(1,1) NOT NULL,
@@ -48,7 +50,7 @@ CREATE TABLE Entraineur
     Nom NVARCHAR(250) NOT NULL,
     DateNais DATE NOT NULL,
     Specialite NVARCHAR(250) NULL,
-    Niveau_Experience NVARCHAR(250) NOT NULL,
+    Niveau_Expérience NVARCHAR(250) NOT NULL,
   
 
     CONSTRAINT PK_EntraineurID PRIMARY KEY CLUSTERED (EntraineurID),
