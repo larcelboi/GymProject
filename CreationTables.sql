@@ -42,7 +42,7 @@ CREATE TABLE Membres
 
 
 ------------------------------------
--- TABLE Entraineur
+-- TABLE Entraineur (Larcel)
 ------------------------------------
 CREATE TABLE Entraineur
 (
@@ -59,14 +59,14 @@ CREATE TABLE Entraineur
 
 
 ------------------------------------
--- TABLE Cours
+-- TABLE Cours (Larcel)
 ------------------------------------
 CREATE TABLE Cours
 (
     CoursID INT IDENTITY(1,1) NOT NULL,
     NomDeCours NVARCHAR(250) NOT NULL,
     EntraineurID INT NULL,
-    TempsCours DATETIME UNIQUE NOT NULL,
+    TempsCours DATETIME  NOT NULL,
 
     CONSTRAINT PK_CoursID PRIMARY KEY CLUSTERED (CoursID),
 
