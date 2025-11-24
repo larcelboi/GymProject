@@ -39,7 +39,10 @@ CREATE TABLE Membres
         REFERENCES MemberShip(ID)
         ON DELETE CASCADE 
 );
-
+-- Ajouter la colonne Coach --
+GO
+ALTER TABLE dbo.Membres
+ADD CoachID INT NULL
 
 ------------------------------------
 -- TABLE Entraineur
@@ -50,13 +53,17 @@ CREATE TABLE Entraineur
     Nom NVARCHAR(250) NOT NULL,
     DateNais DATE NOT NULL,
     Specialite NVARCHAR(250) NULL,
-    Niveau_Expérience NVARCHAR(250) NOT NULL,
+    Niveau_ExpÃ©rience NVARCHAR(250) NOT NULL,
+    MembreID int,
   
 
     CONSTRAINT PK_EntraineurID PRIMARY KEY CLUSTERED (EntraineurID),
-
+        
+    CONSTRAINT FK_MembreID
+        FOREIGN KEY (MembreID)
+        REFERENCES Membres(MembreID)
+        ON DELETE CASCADE 
 );
-
 
 ------------------------------------
 -- TABLE Cours
