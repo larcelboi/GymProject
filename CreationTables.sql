@@ -39,7 +39,10 @@ CREATE TABLE Membres
         REFERENCES MemberShip(ID)
         ON DELETE CASCADE 
 );
-
+-- Ajouter la colonne Coach --
+GO
+ALTER TABLE dbo.Membres
+ADD CoachID INT NULL
 
 ------------------------------------
 -- TABLE Entraineur
