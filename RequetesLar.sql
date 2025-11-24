@@ -4,8 +4,9 @@
 	select * from Membres
 	select * from Cours
 	select * from EntraineurCours
-	go;
-	create procedure AjouterCoursEntraineur
+
+	go
+	create procedure UpdateCoursEntraineur
 		@CoursID int,
 		@EntraineurID int
 	as
@@ -15,9 +16,9 @@
 		set EntraineurID = @EntraineurID
 		where CoursID = @CoursID
 	end;
-	exec AjouterCoursEntraineur 10,5
+	exec UpdateCoursEntraineur 100,200
 
-	-- trigger ajotuer le cours et l'entraineur à la table EntraineurCours
+	-- Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours
 	select * from Membres
 	select * from Entraineur
 	select * from EntraineurCours
@@ -36,7 +37,7 @@
 	end
 	go
 
--- Voir à quelles heures sont les cours avec un coach
-	select NomDeCours,TempsCours
-	from Cours
-	where EntraineurID is not null
+-- Voir à quelles heures sont les cours avec qui ont un entraineur
+	select NomDeCours,en.Nom,format(TempsCours,'hh tt') as 'Début du Cours'
+	from Cours c inner join Entraineur en on en.EntraineurID = c.EntraineurID
+	where en.EntraineurID is not null
