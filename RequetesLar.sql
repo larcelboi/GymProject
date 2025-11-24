@@ -1,6 +1,6 @@
 -- Requête --
 
--- procedure qui  ajoute le cours et l'entraineur à la table de relation --
+-- procedure qui  assigne l'entraineur à un cours --
 	select * from Membres
 	select * from Cours
 	select * from EntraineurCours
@@ -9,29 +9,32 @@
 		@CoursID int,
 		@EntraineurID int
 	as
+		set nocount on;
 	begin
 		update Cours
 		set EntraineurID = @EntraineurID
 		where CoursID = @CoursID
-
-		insert into EntraineurCours(CoursID,EntraineurID)
-		values(@CoursID,@EntraineurID)
 	end;
-	exec AjouterCoursEntraineur 3,200
+	exec AjouterCoursEntraineur 10,5
 
-	-- fonction qui retourne une liste des membres assignés à un EntraineurID
+	-- trigger ajotuer le cours et l'entraineur à la table EntraineurCours
 	select * from Membres
 	select * from Entraineur
-	go;
-	create or alter function MembresEntraineur (@EntraineurID int)
-	returns table
-	as 
-	return
-	(
-		select * 
-		from Membres
-		where Entrai
-	)
+	select * from EntraineurCours
+
+	drop trigger if exists AjouterCourEntraineur
+
+	go
+	create or alter TRIGGER  AjouterCourEntraineur
+	on Cours
+	after update
+	as
+	begin
+		insert into EntraineurCours(CoursID,EntraineurID)
+		select CoursID,EntraineurID 
+		from inserted
+	end
+	go
 
 -- Voir à quelles heures sont les cours avec un coach
 	select NomDeCours,TempsCours
