@@ -38,6 +38,17 @@
 	go
 
 -- Voir à quelles heures sont les cours avec qui ont un entraineur
-	select NomDeCours,en.Nom,format(TempsCours,'hh tt') as 'Début du Cours'
-	from Cours c inner join Entraineur en on en.EntraineurID = c.EntraineurID
-	where en.EntraineurID is not null
+		
+
+	go
+	create or alter function CoursDisponible(@Heure NVARCHAR(10))
+	returns table
+	as
+	return
+	(
+		select NomDeCours,en.Nom,format(TempsCours,'h tt') as 'Début du Cours'
+		from Cours c inner join Entraineur en on en.EntraineurID = c.EntraineurID
+		where en.EntraineurID is not null  and format(TempsCours,'h tt') like '2 PM'
+	)
+	go
+	select * from  dbo.CoursDisponible('2 PM')
