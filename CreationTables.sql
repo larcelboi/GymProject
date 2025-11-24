@@ -43,6 +43,10 @@ CREATE TABLE Membres
 GO
 ALTER TABLE dbo.Membres
 ADD CoachID INT NULL
+CONSTRAINT FK_CoachID
+    FOREIGN KEY (CoachID)
+    REFERENCES Entraineur(EntraineurID)
+    ON DELETE CASCADE
 
 ------------------------------------
 -- TABLE Entraineur
