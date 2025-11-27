@@ -102,8 +102,8 @@ CREATE TABLE Cours
 ------------------------------------
 CREATE TABLE EntraineurCours
 (
-    EntraineurID INT NOT NULL,
-    CoursID INT NOT NULL,
+    EntraineurID INT  NOT NULL,
+    CoursID INT  NOT NULL,
 
     CONSTRAINT FK_CoachCours_EntraineurID
         FOREIGN KEY (EntraineurID)
@@ -111,5 +111,8 @@ CREATE TABLE EntraineurCours
 
     CONSTRAINT FK_CoachCours_CoursID
         FOREIGN KEY (CoursID)
-        REFERENCES Cours(CoursID)
+        REFERENCES Cours(CoursID),
+
+    constraint "PK_EntraineurID_CoursID"
+        primary key CLUSTERED (EntraineurID,CoursID) 
 );

@@ -105,9 +105,39 @@
 
 	go
 	exec GénérerEntraineurC
-
+	
 	select top 1 cours.NomDeCours,count(*) as 'Réservés'
 	from EntraineurCours ec inner join Cours cours on ec.CoursID = cours.CoursID
 	group by cours.NomDeCours
 	order by count(*) desc
+	
+
+	-- DELETE --
+	go 
+	create or alter trigger EnleverEntrainerAuCours
+	on EntraineurCours
+	after delete
+	as
+		set nocount on;
+	begin 
+		delete from Cours 
+		where EntraineurID = (select EntraineurID from deleted) and  CoursID = (select CoursID from deleted)
+	end
+
+	go
+	create or alter procedure EnleverCoursTableRelation
+		@CoursID int,
+		@Entraineur int
+	as
+		set nocount on ;
+	begin
+		delete from EntraineurCours
+		where CoursID = @CoursID and EntraineurID = @Entraineur
+	end
+	go
+	
+	exec EnleverCoursTableRelation 1,185
+	select * from EntraineurCours 
+	select * from Cours 
+
 	
