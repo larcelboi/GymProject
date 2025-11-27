@@ -1,5 +1,5 @@
 USE Gym
--- SUPPRESSION DES TABLES DANS LE BON ORDRE
+-- ENLEVER LES CLÉS DANS LES TABLES --
 alter table Cours
 drop constraint FK_Cours_EntraineurID;
 alter table Membres
@@ -7,6 +7,7 @@ drop constraint FK_CoachID;
 alter table Entraineur
 drop constraint FK_MembreID;
 
+-- SUPPRESSION DES TABLES DANS LE BON ORDRE --
 DROP TABLE IF EXISTS EntraineurCours;
 DROP TABLE IF EXISTS Cours
 DROP TABLE IF EXISTS Membres;
