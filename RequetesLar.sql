@@ -135,6 +135,7 @@
 		where CoursID = @CoursID and EntraineurID = @Entraineur
 	end
 	go
+
 	
 	exec EnleverCoursTableRelation 1,185
 	select * from EntraineurCours 
