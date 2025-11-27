@@ -1,10 +1,18 @@
 USE Gym
 -- SUPPRESSION DES TABLES DANS LE BON ORDRE
+alter table Cours
+drop constraint FK_Cours_EntraineurID;
+alter table Membres
+drop constraint FK_CoachID;
+alter table Entraineur
+drop constraint FK_MembreID;
+
 DROP TABLE IF EXISTS EntraineurCours;
-DROP TABLE IF EXISTS Cours;
-DROP TABLE IF EXISTS Entraineur;
+DROP TABLE IF EXISTS Cours
 DROP TABLE IF EXISTS Membres;
+DROP TABLE IF EXISTS Entraineur;
 DROP TABLE IF EXISTS MemberShip;
+
 
 
 ------------------------------------
@@ -19,7 +27,6 @@ CREATE TABLE MemberShip
 
     CONSTRAINT PK_MembershipID PRIMARY KEY CLUSTERED (ID)
 );
-
 
 ------------------------------------
 -- TABLE Membres
@@ -37,20 +44,14 @@ CREATE TABLE Membres
     CONSTRAINT FK_Membres_MembershipID
         FOREIGN KEY (MembershipID)
         REFERENCES MemberShip(ID)
-        ON DELETE CASCADE 
+        ON DELETE cascade 
 );
--- Ajouter la colonne Coach --
-GO
-ALTER TABLE dbo.Membres
-ADD CoachID INT NULL
-CONSTRAINT FK_CoachID
-    FOREIGN KEY (CoachID)
-    REFERENCES Entraineur(EntraineurID)
-    ON DELETE CASCADE
+
 
 ------------------------------------
 -- TABLE Entraineur
 ------------------------------------
+go
 CREATE TABLE Entraineur
 (
     EntraineurID INT IDENTITY(1,1) NOT NULL,
@@ -66,27 +67,35 @@ CREATE TABLE Entraineur
     CONSTRAINT FK_MembreID
         FOREIGN KEY (MembreID)
         REFERENCES Membres(MembreID)
-        ON DELETE CASCADE 
+        ON DELETE set null 
 );
 
+-- Ajouter la colonne Coach --
+GO
+ALTER TABLE dbo.Membres
+ADD CoachID INT NULL
+CONSTRAINT FK_CoachID
+    FOREIGN KEY (CoachID)
+    REFERENCES Entraineur(EntraineurID)
+    on delete set null
 ------------------------------------
 -- TABLE Cours
 ------------------------------------
+go
 CREATE TABLE Cours
 (
     CoursID INT IDENTITY(1,1) NOT NULL,
     NomDeCours NVARCHAR(250) NOT NULL,
     EntraineurID INT NULL,
-    TempsCours DATETIME UNIQUE NOT NULL,
+    TempsCours DATETIME  NOT NULL,
 
     CONSTRAINT PK_CoursID PRIMARY KEY CLUSTERED (CoursID),
 
     CONSTRAINT FK_Cours_EntraineurID
         FOREIGN KEY (EntraineurID)
         REFERENCES Entraineur(EntraineurID)
-        ON DELETE SET NULL
+        ON DELETE CASCADE 
 );
-
 
 ------------------------------------
 -- TABLE Relation Entraineur / Cours
