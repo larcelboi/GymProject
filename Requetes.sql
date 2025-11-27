@@ -19,3 +19,83 @@ AS
 	WHERE ms.FinMemberShip <= DATEADD(MONTH, +1, GETDATE()) AND ms.FinMemberShip > GETDATE()
 GO
 
+
+
+-- Requette 3 Xavier : ---
+--- assigner un coach à des membres --
+SELECT * FROM dbo.membres
+SELECT * FROM dbo.Entraineur
+
+GO
+CREATE OR ALTER PROCEDURE pAssignerCoachGroupe
+    @CoachID INT,
+    @MinID INT,
+    @MaxID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE Membres
+    SET CoachID = @CoachID
+    WHERE MembreID BETWEEN @MinID AND @MaxID;
+END;
+GO
+
+
+-- EXEC --
+EXEC pAssignerCoachGroupe @CoachID = 3, @MinID = 10, @MaxID = 30;
+EXEC pAssignerCoachGroupe @CoachID = 34, @MinID = 40, @MaxID = 60
+
+
+
+-- prequete / procedure 4 --
+-- inscrire / ajouter un membre a un cours
+GO
+CREATE OR ALTER PROCEDURE dbo.pInscrireMembreAuCours
+    @MembreID INT,
+    @CoursID  INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (SELECT 1 FROM dbo.MembreCours WHERE MembreID = @MembreID AND CoursID = @CoursID)
+    BEGIN
+        SELECT 'Déjà inscrit.' AS Message;
+        RETURN;
+    END
+
+    INSERT INTO dbo.MembreCours (MembreID, CoursID)
+    VALUES (@MembreID, @CoursID);
+
+    SELECT 'Inscription réussie.' AS Message;
+END;
+GO
+
+-- execution -- 
+EXEC dbo.pInscrireMembreAuCours @MembreID = 5, @CoursID = 3;
+
+
+
+-- requete 5  procedure pour désinscrire un membre d'un cours --
+GO
+CREATE OR ALTER PROCEDURE dbo.pDesinscrireMembreDuCours_Simple
+    @MembreID INT,
+    @CoursID  INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM dbo.MembreCours
+    WHERE MembreID = @MembreID AND CoursID = @CoursID;
+
+    SELECT @@ROWCOUNT AS LignesSupprimees;
+END;
+GO
+
+
+-- execution -- 
+EXEC dbo.pDesinscrireMembreDuCours_Simple @MembreID = 5, @CoursID = 3;
+
+
+
+
