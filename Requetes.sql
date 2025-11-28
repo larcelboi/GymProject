@@ -98,4 +98,21 @@ EXEC dbo.pDesinscrireMembreDuCours_Simple @MembreID = 5, @CoursID = 3;
 
 
 
+-- creation d'une vue , afficher cours le plus populaire --
+CREATE OR ALTER VIEW vCoursAvecNombreDeMembres
+AS
+SELECT 
+    c.CoursID,
+    c.NomDeCours,
+    c.TempsCours,
+    COUNT(mc.MembreID) AS NombreDeMembres
+FROM Cours c
+LEFT JOIN MembreCours mc ON c.CoursID = mc.CoursID
+GROUP BY c.CoursID, c.NomDeCours, c.TempsCours;
+GO
 
+
+-- execution -- 
+SELECT *
+FROM vCoursAvecNombreDeMembres
+ORDER BY NombreDeMembres DESC;
