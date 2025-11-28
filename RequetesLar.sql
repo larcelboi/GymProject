@@ -37,6 +37,7 @@
 	select * from Entraineur
 	select * from EntraineurCours
 
+
 	go
 	create or alter TRIGGER  AjouterCourEntraineur
 	on Cours
