@@ -71,8 +71,8 @@
 	go
 
 	-- 2. procedure qui  permet à l'entraineur de réserver un cours--
+		/* Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique. */
 
-	/* Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique. */
 	select * from Membres
 	select * from Cours
 	select * from Entraineur
@@ -93,7 +93,6 @@
 
 	
 	-- 3. Trouver le cours le plus populaire --
-
 		/* Explication : La direction doit savoir quels cours
 		sont les plus réservés, afin de mieux planifier les horaires et les ressources. */
 	go
@@ -126,7 +125,6 @@
 	
 
 	-- 4. Requête quel entraineur réserve quel cours --
-
 		/*Explication : L’administration doit pouvoir consulter facilement 
 		toutes les réservations faites par les entraîneurs.  */
 
@@ -135,7 +133,7 @@
 	as
 	select 
 		en.EntraineurID,
-		en.Nom,
+		en.Nom as 'NomEntraineur',
 		cou.NomDeCours,
 		cou.CoursID
 	from EntraineurCours ec
@@ -146,7 +144,6 @@
 	select * from VueCoursRéservé
 
 	-- 5. Voir à quelles heures sont les cours avec qui ont un entraineur
-
 		/*Explication : Les utilisateurs veulent voir quel cours commence à
 		une heure donnée, avec l’entraîneur responsable.  */
 
@@ -164,8 +161,9 @@
 	select * from  dbo.CoursDisponible('2 PM')
 
 -- DELETE --
+
+	-- Trigger qui enlève le cours --
 	go 
-	-- Trigger qui enlève le cours
 	create or alter trigger EnleverEntrainerAuCours
 	on EntraineurCours
 	after delete
@@ -196,3 +194,6 @@
 	select * from Entraineur
 	delete from Entraineur
 	where EntraineurID = 1
+
+	-- SET null entraineur lorsque tu le delete de la table entraineur
+	select * from Cours
