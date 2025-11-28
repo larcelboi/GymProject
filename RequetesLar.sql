@@ -4,14 +4,15 @@
 	alter table Entraineur
 	add DateNaisC varbinary(512) NULL;
 
+	
 	alter table Entraineur
-	add salt varbinary(8000) NULL;
+	add salt varbinary(32) NULL;
 
 	select * from Entraineur
 
 
 	declare @compteur int = 1;
-	declare @salt VARBINARY(8000);
+	declare @salt VARBINARY(32);
 
 	set @compteur = 0
 
@@ -19,12 +20,12 @@
 	begin
 
 		set @compteur = @compteur + 1
-		set @salt = crypt_gen_random (8000);
+		set @salt = crypt_gen_random (32);
 
-		insert into Entraineur(salt,DateNaisC)
-		select @salt,HASHBYTES('SHA2_512',CONCAT(DateNais, @salt))
-		from Entraineur
-		where EntraineurID = @compteur
+		UPDATE Entraineur
+		SET salt = @salt,
+			DateNaisC = HASHBYTES('SHA2_512', CONCAT(DateNais, @salt))
+		WHERE EntraineurID = @compteur;
 	end
 
 	SELECT name, key_algorithm, key_length
@@ -35,16 +36,23 @@
 	FROM sys.symmetric_keys
 	WHERE name = '##MS_DatabaseMasterKey##'
 
+	-- Création de Master Key -- 
 	CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'PasswordDMK';
 
-	BACKUP MASTER KEY TO FILE = 'D:\data\master_key'  
+	BACKUP MASTER KEY TO FILE = 'D:\data\MasterKeyBackup.key'  
 	ENCRYPTION BY PASSWORD = 'PasswordfichierDMK'
 
+	CREATE ASYMMETRIC KEY AsymmCustomerKey WITH ALGORITHM = RSA_2048
+
+	CREATE SYMMETRIC KEY CustomerKey WITH ALGORITHM = AES_256
+	ENCRYPTION BY ASYMMETRIC KEY AsymmCustomerKey;
 
 -- REQUÊTE --
 
 	-- 1. Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours
-		/* Explication :  */
+
+		/* Explication :  Les administrateurs ont besoin que chaque fois qu’un cours est modifié, 
+		l’assignation entraîneur–cours soit automatiquement enregistrée dans la table de relation. */
 
 	select * from Membres
 	select * from Entraineur
@@ -63,7 +71,8 @@
 	go
 
 	-- 2. procedure qui  permet à l'entraineur de réserver un cours--
-	/* */
+
+	/* Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique. */
 	select * from Membres
 	select * from Cours
 	select * from Entraineur
@@ -84,7 +93,9 @@
 
 	
 	-- 3. Trouver le cours le plus populaire --
-		/* Explication :  */
+
+		/* Explication : La direction doit savoir quels cours
+		sont les plus réservés, afin de mieux planifier les horaires et les ressources. */
 	go
 	-- Procédure qui ajoute des EntraineurIDs aux cours
 	create or alter procedure GénérerEntraineurC
@@ -115,7 +126,9 @@
 	
 
 	-- 4. Requête quel entraineur réserve quel cours --
-		/*Explication :  */
+
+		/*Explication : L’administration doit pouvoir consulter facilement 
+		toutes les réservations faites par les entraîneurs.  */
 
 	go
 	create or alter view VueCoursRéservé
@@ -133,7 +146,9 @@
 	select * from VueCoursRéservé
 
 	-- 5. Voir à quelles heures sont les cours avec qui ont un entraineur
-		/*Explication :  */
+
+		/*Explication : Les utilisateurs veulent voir quel cours commence à
+		une heure donnée, avec l’entraîneur responsable.  */
 
 	go
 	create or alter function CoursDisponible(@Heure NVARCHAR(10))
