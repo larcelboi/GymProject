@@ -117,3 +117,24 @@ CREATE TABLE EntraineurCours
     constraint "PK_EntraineurID_CoursID"
         primary key CLUSTERED (EntraineurID,CoursID) 
 );
+
+-- table de relation MembreCours --
+CREATE TABLE dbo.MembreCours
+(
+    MembreID INT NOT NULL,
+    CoursID  INT NOT NULL,
+    DateInscription DATETIME NOT NULL DEFAULT (GETDATE()),
+
+    CONSTRAINT PK_MembreCours PRIMARY KEY CLUSTERED (MembreID, CoursID),
+
+    CONSTRAINT FK_MembreCours_MembreID
+        FOREIGN KEY (MembreID)
+        REFERENCES dbo.Membres(MembreID)
+        ON DELETE CASCADE, 
+
+    CONSTRAINT FK_MembreCours_CoursID
+        FOREIGN KEY (CoursID)
+        REFERENCES dbo.Cours(CoursID)
+        ON DELETE CASCADE  
+);
+GO
