@@ -21,7 +21,7 @@ GO
 
 
 
--- Requette 3 Xavier : ---
+-- traitement automatise : ---
 --- assigner un coach à des membres --
 SELECT * FROM dbo.membres
 SELECT * FROM dbo.Entraineur
@@ -48,7 +48,7 @@ EXEC pAssignerCoachGroupe @CoachID = 34, @MinID = 40, @MaxID = 60
 
 
 
--- prequete / procedure 4 --
+-- traitement automatise --
 -- inscrire / ajouter un membre a un cours
 GO
 CREATE OR ALTER PROCEDURE dbo.pInscrireMembreAuCours
@@ -76,7 +76,7 @@ EXEC dbo.pInscrireMembreAuCours @MembreID = 5, @CoursID = 3;
 
 
 
--- requete 5  procedure pour désinscrire un membre d'un cours --
+-- traitement automatise--
 GO
 CREATE OR ALTER PROCEDURE dbo.pDesinscrireMembreDuCours_Simple
     @MembreID INT,
@@ -97,8 +97,7 @@ GO
 EXEC dbo.pDesinscrireMembreDuCours_Simple @MembreID = 5, @CoursID = 3;
 
 
-
--- creation d'une vue , afficher cours le plus populaire --
+-- requette 3 Vue , afficher les cours le plus populair par rapport au nb  de participants--
 CREATE OR ALTER VIEW vCoursAvecNombreDeMembres
 AS
 SELECT 
@@ -116,3 +115,28 @@ GO
 SELECT *
 FROM vCoursAvecNombreDeMembres
 ORDER BY NombreDeMembres DESC;
+
+
+
+-- requete 4 --
+--  afficher les membres sans coach ( pour insite ensuite à en prendre un ) but commerciale ---
+SELECT *
+FROM Membres
+WHERE MembreID NOT IN (
+    SELECT MembreID
+    FROM MembresCours
+);
+
+
+-- requete 5 -- 
+-- afficher l'entraineur avec le plus de membres / personnes qu'il coach , vise a recompeser le meilleur employer ) 
+SELECT EntraineurID, Prenom, Nom
+FROM Entraineur
+WHERE EntraineurID = (
+    SELECT TOP 1 CoachID
+    FROM Membres
+    WHERE CoachID IS NOT NULL
+    GROUP BY CoachID
+    ORDER BY COUNT(*) DESC
+);
+
