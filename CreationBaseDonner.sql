@@ -5,36 +5,3 @@ CREATE DATABASE Gym
 COLLATE French_CI_AS;
 GO
 
-SELECT * FROM sys.databases WHERE name = 'Gym';
-GO
-
-USE Gym;
-GO
-EXEC sp_helpfile;
-GO
-
-CREATE SCHEMA Gym AUTHORIZATION dbo;
-GO
-
-ALTER DATABASE Gym
-ADD FILEGROUP GymFileGroup;
-
-ALTER DATABASE Gym
-ADD FILE (
-    NAME = GymData,
-    FILENAME = 'C:\SQLData\GymData.mdf',
-    SIZE = 10MB,
-    MAXSIZE = 100MB,
-    FILEGROWTH = 5MB
-)
-TO FILEGROUP GymFileGroup;
-
-ALTER DATABASE Gym
-ADD LOG FILE (
-    NAME = GymLog,
-    FILENAME = 'F:\SQLLogs\GymLog.ldf',
-    SIZE = 5MB,
-    MAXSIZE = 50MB,
-    FILEGROWTH = 5MB
-);
-GO
