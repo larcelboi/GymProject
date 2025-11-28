@@ -48,6 +48,7 @@ CREATE TABLE Membres
         ON DELETE cascade 
 );
 
+------------------------------------
 
 ------------------------------------
 -- TABLE Entraineur

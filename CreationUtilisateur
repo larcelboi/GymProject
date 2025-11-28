@@ -1,0 +1,17 @@
+-- 1️⃣ Création des logins (niveau serveur)
+CREATE LOGIN ManagerGym WITH PASSWORD = 'Password1';
+CREATE LOGIN Coach WITH PASSWORD = 'Password1';
+
+-- 2️⃣ Création des utilisateurs dans la base de données
+USE Gym  -- Remplace par le nom de ta base
+CREATE USER ManagerGym FOR LOGIN ManagerGym;
+CREATE USER Coach FOR LOGIN Coach;
+
+-- 3️⃣ Attribution des rôles intégrés de SQL Server
+-- ManagerGym : lecture + écriture
+ALTER ROLE db_datareader ADD MEMBER ManagerGym;
+ALTER ROLE db_datawriter ADD MEMBER ManagerGym;
+
+-- Coach : lecture seulement
+ALTER ROLE db_datareader ADD MEMBER Coach;
+
