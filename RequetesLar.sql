@@ -4,15 +4,26 @@
 	alter table Entraineur
 	add DateNaisC varbinary(512) NULL;
 
+	alter table Entraineur
+	add salt varbinary(8000) NULL;
+
+	select * from Entraineur
+
 
 	declare @compteur int = 1;
+	declare @salt VARBINARY(8000);
+
 	set @compteur = 0
+
 	while @compteur < 260
 	begin
-		set @compteur = @compteur + 1
 
-		update Entraineur
-		set DateNaisC = HASHBYTES('SHA2_512',CONVERT(varchar(30),DateNais,126))
+		set @compteur = @compteur + 1
+		set @salt = crypt_gen_random (8000);
+
+		insert into Entraineur(salt,DateNaisC)
+		select @salt,HASHBYTES('SHA2_512',CONCAT(DateNais, @salt))
+		from Entraineur
 		where EntraineurID = @compteur
 	end
 
@@ -33,10 +44,11 @@
 -- REQUÊTE --
 
 	-- 1. Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours
+		/* Explication :  */
+
 	select * from Membres
 	select * from Entraineur
 	select * from EntraineurCours
-
 
 	go
 	create or alter TRIGGER  AjouterCourEntraineur
@@ -50,7 +62,8 @@
 	end
 	go
 
-	-- 2. procedure qui  assigne l'entraineur à un cours --
+	-- 2. procedure qui  permet à l'entraineur de réserver un cours--
+	/* */
 	select * from Membres
 	select * from Cours
 	select * from Entraineur
@@ -71,6 +84,7 @@
 
 	
 	-- 3. Trouver le cours le plus populaire --
+		/* Explication :  */
 	go
 	-- Procédure qui ajoute des EntraineurIDs aux cours
 	create or alter procedure GénérerEntraineurC
@@ -101,7 +115,8 @@
 	
 
 	-- 4. Requête quel entraineur réserve quel cours --
-	
+		/*Explication :  */
+
 	go
 	create or alter view VueCoursRéservé
 	as
@@ -118,6 +133,8 @@
 	select * from VueCoursRéservé
 
 	-- 5. Voir à quelles heures sont les cours avec qui ont un entraineur
+		/*Explication :  */
+
 	go
 	create or alter function CoursDisponible(@Heure NVARCHAR(10))
 	returns table
