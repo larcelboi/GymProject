@@ -1,7 +1,7 @@
 <H1>Projet</H1>
 Notre projet va être sur un gym.
 
-<H2>Table</H2><br>
+<H2>Table</H2>
 Nos table seront :<br>
   - Entraineur (entité)<br>
   - Membre (entité)<br>
