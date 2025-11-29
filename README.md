@@ -1,8 +1,8 @@
 <H1>**Projet**</H1>
-Notre projet va être sur un gym.
+--Notre projet va être sur un gym.
 
 <H2>**Table** </H2> <br>
-Nos table seront :
+--Nos table seront :
   - Entraineur (entité)
   - Membre (entité)
   - Cours (entité)
