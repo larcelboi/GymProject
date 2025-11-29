@@ -1,5 +1,5 @@
 --Projet--
-  Notre projet va être sur un gym.
+Notre projet va être sur un gym.
 
 -- Table --
 Nos table seront :
