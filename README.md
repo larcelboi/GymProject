@@ -1,7 +1,7 @@
---Projet--
+--**Projet**--\n
 Notre projet va être sur un gym.
 
--- Table --
+-- **Table** --
 Nos table seront :
   - Entraineur (entité)
   - Membre (entité)
