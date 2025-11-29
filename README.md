@@ -1,4 +1,4 @@
---**Projet**--\n
+--**Projet**--<br>
 Notre projet va être sur un gym.
 
 -- **Table** --
@@ -9,5 +9,5 @@ Nos table seront :
   - EntraineurCours (table relation entre Entraineur et Cours)
 - 
 
--- schéma entité-relation --
+-- **schéma entité-relation** --
 <img width="841" height="531" alt="Diagramme sans nom drawio" src="https://github.com/user-attachments/assets/e93829da-aaa1-45e3-a474-f751eccaef9d" />
