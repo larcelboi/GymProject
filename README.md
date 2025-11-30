@@ -13,7 +13,7 @@ Nos table seront :<br>
 <H2>schéma entité-relation</H2>
 <img width="1051" height="731" alt="Copie de GymBD drawio" src="https://github.com/user-attachments/assets/894358a0-cf42-4a97-98d7-14a9e24753e7" />
 
-<H2>Requetes Larcel</H2><br>
+<H2>Requetes Larcel</H2>
    <h4> 1 . Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours</h4>
 	    Explication :  Les administrateurs ont besoin que chaque fois qu’un cours est modifié, <br>
 		l’assignation entraîneur–cours soit automatiquement enregistrée dans la table de relation.<br>
@@ -30,8 +30,8 @@ Nos table seront :<br>
 	 une heure donnée, avec l’entraîneur responsable.<br>
 
 <H2>Planification Sauvegarder/Restaurer</H2>
-	<h4>Sauvegarder</h4>
-	<h4>Retaurer</h4>
+	<h3>Sauvegarder</h3>
+	<h3>Retaurer</h3>
 
 
 <H2> Tableau d'autorisations / Utilisateurs </H2>
