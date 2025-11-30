@@ -22,22 +22,22 @@ Nos table seront :<br>
      Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique.<br>
    <h4>3. Trouver le cours le plus populaire</h4>
      Explication : La direction doit savoir quels cours<br>
-		  sont les plus réservés, afin de mieux planifier les horaires et les ressources.<br>
-  <h4>4. Requête quel entraineur réserve quel cours</h4>h4>
+	  sont les plus réservés, afin de mieux planifier les horaires et les ressources.<br>
+  <h4>4. Requête quel entraineur réserve quel cours</h4>
      Explication : L’administration doit pouvoir consulter facilement <br>
-		 toutes les réservations faites par les entraîneurs.<br>
-  <h4>5. Voir à quelles heures sont les cours avec qui ont un entraineur</h4>h4>
+	 toutes les réservations faites par les entraîneurs.<br>
+  <h4>5. Voir à quelles heures sont les cours avec qui ont un entraineur</h4>
      Explication : Les utilisateurs veulent voir quel cours commence à<br>
 	 une heure donnée, avec l’entraîneur responsable.<br>
 
-<H2>Planification Sauvegarder/Restaurer</H2><br>
+<H2>Planification Sauvegarder/Restaurer</H2>
 
-<H2> Tableau d'autorisations / Utilisateurs </H2><br>
+<H2> Tableau d'autorisations / Utilisateurs </H2>
 <img width="2481" height="3509" alt="tableau autorisation BD" src="https://github.com/user-attachments/assets/fb18a6a7-402f-48ee-8ffb-c4479f7de19c" />
 
 
 
-<H2> Fierté Xavier </H2><br>
+<H2> Fierté Xavier </H2>
   - Avoir terminé ma partie du projet avant le jour de remise
   - la table MembreCours
   -  Sa création
