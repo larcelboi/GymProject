@@ -17,8 +17,8 @@ DROP TABLE IF EXISTS MemberShip;
 
 
 ------------------------------------
--- TABLE Membership
-------------------------------------
+-- TABLE Membership -- Xavier
+
 
 CREATE TABLE MemberShip
 (
@@ -30,8 +30,8 @@ CREATE TABLE MemberShip
 );
 
 ------------------------------------
--- TABLE Membres
-------------------------------------
+-- TABLE Membres -- Xavier
+
 
 CREATE TABLE Membres
 (
@@ -72,7 +72,7 @@ CREATE TABLE Entraineur
         ON DELETE set null 
 );
 
--- Ajouter la colonne Coach --
+-- Ajouter la colonne Coach  à la table membre -- -Xavier
 GO
 ALTER TABLE dbo.Membres
 ADD CoachID INT NULL
@@ -83,7 +83,7 @@ CONSTRAINT FK_CoachID
 ------------------------------------
 -- TABLE Cours
 ------------------------------------
-go
+GO
 CREATE TABLE Cours
 (
     CoursID INT IDENTITY(1,1) NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE EntraineurCours
         primary key CLUSTERED (EntraineurID,CoursID) 
 );
 
--- table de relation MembreCours --
+-- table de relation MembreCours -- - Xavier
 CREATE TABLE dbo.MembreCours
 (
     MembreID INT NOT NULL,
