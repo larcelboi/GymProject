@@ -15,19 +15,18 @@ Nos table seront :<br>
 
 
 <H2>Requetes Larcel</H2><br>
-   <h4>1 . Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours</h4>
+   <h4> 1 . Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours</h4>
 	    Explication :  Les administrateurs ont besoin que chaque fois qu’un cours est modifié, <br>
 		l’assignation entraîneur–cours soit automatiquement enregistrée dans la table de relation.<br>
-		
-  2. procedure qui  permet à l'entraineur de réserver un cours<br>
+  <h4> 2. procedure qui  permet à l'entraineur de réserver un cours</h4>
      Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique.<br>
-  4. Trouver le cours le plus populaire<br>
+   <h4>3. Trouver le cours le plus populaire</h4>
      Explication : La direction doit savoir quels cours<br>
 		  sont les plus réservés, afin de mieux planifier les horaires et les ressources.<br>
-  5. Requête quel entraineur réserve quel cours<br>
+  <h4>4. Requête quel entraineur réserve quel cours</h4>h4>
      Explication : L’administration doit pouvoir consulter facilement <br>
 		 toutes les réservations faites par les entraîneurs.<br>
-  6. Voir à quelles heures sont les cours avec qui ont un entraineur<br>
+  <h4>5. Voir à quelles heures sont les cours avec qui ont un entraineur</h4>h4>
      Explication : Les utilisateurs veulent voir quel cours commence à<br>
 	 une heure donnée, avec l’entraîneur responsable.<br>
 
