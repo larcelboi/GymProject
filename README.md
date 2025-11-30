@@ -30,6 +30,9 @@ Nos table seront :<br>
 	 une heure donnée, avec l’entraîneur responsable.<br>
 
 <H2>Planification Sauvegarder/Restaurer</H2>
+	<h4>Sauvegarder</h4>
+	<h4>Retaurer</h4>
+
 
 <H2> Tableau d'autorisations / Utilisateurs </H2>
 <img width="2481" height="3509" alt="tableau autorisation BD" src="https://github.com/user-attachments/assets/fb18a6a7-402f-48ee-8ffb-c4479f7de19c" />
