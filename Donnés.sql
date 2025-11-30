@@ -1,4 +1,6 @@
-USE Gym
+USE Gym 
+
+-- Chacun s'est occupé de l'insertion de données pour ses tables --
 
 --- donnée pour MemberShip --
 INSERT INTO MemberShip (DateDebutMemberShip, FinMemberShip) VALUES ('2024-04-14','2025-04-14');
