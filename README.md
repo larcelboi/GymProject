@@ -16,8 +16,10 @@ Nos table seront :<br>
 
 <H2>Requetes Larcel</H2><br>
   1. Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours<br>
+  
 	    Explication :  Les administrateurs ont besoin que chaque fois qu’un cours est modifié, <br>
 		l’assignation entraîneur–cours soit automatiquement enregistrée dans la table de relation.<br>
+		
   2. procedure qui  permet à l'entraineur de réserver un cours<br>
      Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique.<br>
   4. Trouver le cours le plus populaire<br>
