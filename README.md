@@ -12,20 +12,12 @@ Nos table seront :<br>
 <H3>schéma entité-relation</H3>
 <img width="1051" height="731" alt="Copie de GymBD drawio" src="https://github.com/user-attachments/assets/894358a0-cf42-4a97-98d7-14a9e24753e7" />
 
-
-
 <H2>Requetes Larcel</H2><br>
-
-
-
-<H2>Requetes Xavier</H2><br>
-
+  1. Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours
 <H2>Planification Sauvegarder/Restaurer</H2><br>
 
 <H2> Tableau d'autorisations / Utilisateurs </H2><br>
 <img width="2481" height="3509" alt="tableau autorisation BD" src="https://github.com/user-attachments/assets/fb18a6a7-402f-48ee-8ffb-c4479f7de19c" />
-
-
 
 <H2> Fierté Xavier </H2><br>
   - Avoir terminé ma partie du projet avant le jour de remise
