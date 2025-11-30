@@ -217,6 +217,7 @@
 	end
 	go
 
+
 	-- test delete
 	delete from Cours
 	where CoursID = 1
