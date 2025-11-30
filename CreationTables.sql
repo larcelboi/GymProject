@@ -1,11 +1,11 @@
 USE Gym
--- ENLEVER LES CLÉS DANS LES TABLES --
-alter table Cours
-drop constraint FK_Cours_EntraineurID;
-alter table Membres
-drop constraint FK_CoachID;
-alter table Entraineur
-drop constraint FK_MembreID;
+go
+-- ENLEVER LES CONSTRAINTS
+
+ALTER TABLE Cours DROP CONSTRAINT FK_Cours_EntraineurID;
+ALTER TABLE Membres DROP CONSTRAINT FK_CoachID;
+ALTER TABLE Membres DROP CONSTRAINT FK_Membres_MembershipID;
+ALTER TABLE Entraineur DROP CONSTRAINT FK_MembreID;
 
 -- SUPPRESSION DES TABLES DANS LE BON ORDRE --
 DROP TABLE IF EXISTS EntraineurCours;
@@ -96,7 +96,6 @@ CREATE TABLE Cours
     CONSTRAINT FK_Cours_EntraineurID
         FOREIGN KEY (EntraineurID)
         REFERENCES Entraineur(EntraineurID)
-        ON DELETE CASCADE 
 );
 
 ------------------------------------

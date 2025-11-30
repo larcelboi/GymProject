@@ -1,63 +1,80 @@
--- Chiffrement
-	select * from Entraineur
+-- Hacher Salt -- 
 
+	-- Ajouter une colonne avec varbinary
 	alter table Entraineur
-	add DateNaisC varbinary(512) NULL;
+	add DateNaisHacher varbinary(512) NULL;
 
-	
+	-- Ajouter une colonne avec varbinary pour salt
 	alter table Entraineur
 	add salt varbinary(32) NULL;
 
-	select * from Entraineur
+	-- LOOP qui vas hacher tous les dates de naissances dans la table -- 
 
+	-- declarer un compteur pour la loop et un @salt pour chiffrer -- 
+		declare @compteur int = 1;
+		declare @salt VARBINARY(32);
 
-	declare @compteur int = 1;
-	declare @salt VARBINARY(32);
+		set @compteur = 0
+		while @compteur < 260
+		begin
+			set @compteur = @compteur + 1
 
-	set @compteur = 0
+			set @salt = crypt_gen_random (32);
 
-	while @compteur < 260
-	begin
+			UPDATE Entraineur
+			SET salt = @salt,
+				DateNaisHacher = HASHBYTES('SHA2_512', CONCAT(DateNais, @salt))
+			WHERE EntraineurID = @compteur;
+		end
 
-		set @compteur = @compteur + 1
-		set @salt = crypt_gen_random (32);
+	alter table entraineur
+	drop column salt
 
-		UPDATE Entraineur
-		SET salt = @salt,
-			DateNaisC = HASHBYTES('SHA2_512', CONCAT(DateNais, @salt))
-		WHERE EntraineurID = @compteur;
-	end
-
-	SELECT name, key_algorithm, key_length
-	FROM master.sys.symmetric_keys
-
-	-- Voir si la Database Master Key est définie (DMK)
-	SELECT name, key_algorithm, key_length
-	FROM sys.symmetric_keys
-	WHERE name = '##MS_DatabaseMasterKey##'
+-- CHIFFREMENT --
 
 	-- Création de Master Key -- 
 	CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'PasswordDMK';
 
-	BACKUP MASTER KEY TO FILE = 'D:\data\MasterKeyBackup.key'  
-	ENCRYPTION BY PASSWORD = 'PasswordfichierDMK'
+	-- Création d'une asymetric key -- 
+	CREATE ASYMMETRIC KEY AsymEntraineurkey WITH ALGORITHM = RSA_2048
 
-	CREATE ASYMMETRIC KEY AsymmCustomerKey WITH ALGORITHM = RSA_2048
+	CREATE SYMMETRIC KEY EntraineurKey WITH ALGORITHM = AES_256
+	ENCRYPTION BY ASYMMETRIC KEY AsymEntraineurkey;
 
-	CREATE SYMMETRIC KEY CustomerKey WITH ALGORITHM = AES_256
-	ENCRYPTION BY ASYMMETRIC KEY AsymmCustomerKey;
+	-- Aller chercher un ID d'une clé asym
+	SELECT ASYMKEY_ID('AsymEntraineurkey')
+
+	-- Aller chercher le ID d'une clé sym
+	SELECT Key_GUID('EntraineurKey')
+
+	-- Ajouter une colonne pour pemettre de chiffrer DateNais
+	alter table entraineur
+	add DateNaisChiffrer varbinary(8000) null;
+
+	 -- Chiffrer avec  une clé asym  -- ENCRYPTBYASYMKEY
+	UPDATE Entraineur
+	SET DateNaisChiffrer = ENCRYPTBYASYMKEY(
+        ASYMKEY_ID('EntraineurKey'),
+        CONVERT(varchar(50), DateNais) -- Convert la DateNais pour permettre le convert et le chiffrement
+    );
+
+	-- Chiffrer avec  une clé asym  -- EncryptByKey 
+	OPEN SYMMETRIC KEY EntraineurKey
+	DECRYPTION BY ASYMMETRIC KEY AsymEntraineurkey;
+
+	UPDATE Entraineur
+	SET DateNaisChiffrer = EncryptByKey(
+        Key_GUID('EntraineurKey'),
+        CONVERT(varchar(50), DateNais) -- Convert la DateNais pour permettre le convert et le chiffrement
+    );
+
+	-- test
+	select * from Entraineur
+
 
 -- REQUÊTE --
 
 	-- 1. Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours
-
-		/* Explication :  Les administrateurs ont besoin que chaque fois qu’un cours est modifié, 
-		l’assignation entraîneur–cours soit automatiquement enregistrée dans la table de relation. */
-
-	select * from Membres
-	select * from Entraineur
-	select * from EntraineurCours
-
 	go
 	create or alter TRIGGER  AjouterCourEntraineur
 	on Cours
@@ -67,17 +84,11 @@
 		insert into EntraineurCours(CoursID,EntraineurID)
 		select CoursID,EntraineurID 
 		from inserted
+		where EntraineurID is not null;
 	end
 	go
 
 	-- 2. procedure qui  permet à l'entraineur de réserver un cours--
-		/* Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique. */
-
-	select * from Membres
-	select * from Cours
-	select * from Entraineur
-	select * from EntraineurCours
-
 	go
 	create procedure UpdateCoursEntraineur
 		@CoursID int,
@@ -89,14 +100,13 @@
 		set EntraineurID = @EntraineurID
 		where CoursID = @CoursID
 	end;
+
+	-- exec
 	exec UpdateCoursEntraineur 100,200
 
 	
-	-- 3. Trouver le cours le plus populaire --
-		/* Explication : La direction doit savoir quels cours
-		sont les plus réservés, afin de mieux planifier les horaires et les ressources. */
+	-- 3. Procéure qui trouve le cours le plus populaire --
 	go
-	-- Procédure qui ajoute des EntraineurIDs aux cours
 	create or alter procedure GénérerEntraineurC
 	as
 		set nocount on;
@@ -114,20 +124,19 @@
 			where CoursID = @compteur
 		end
 	end
-
 	go
+	
+	-- exec
 	exec GénérerEntraineurC
 	
+	-- test
 	select top 1 cours.NomDeCours,count(*) as 'Réservés'
 	from EntraineurCours ec inner join Cours cours on ec.CoursID = cours.CoursID
 	group by cours.NomDeCours
 	order by count(*) desc
 	
 
-	-- 4. Requête quel entraineur réserve quel cours --
-		/*Explication : L’administration doit pouvoir consulter facilement 
-		toutes les réservations faites par les entraîneurs.  */
-
+	-- 4. Requête qu afficher l'entraineur et les cours réservés --
 	go
 	create or alter view VueCoursRéservé
 	as
@@ -141,12 +150,12 @@
 		inner join Cours cou on cou.CoursID = ec.CoursID
 	
 	go
+
+	-- test
 	select * from VueCoursRéservé
 
-	-- 5. Voir à quelles heures sont les cours avec qui ont un entraineur
-		/*Explication : Les utilisateurs veulent voir quel cours commence à
-		une heure donnée, avec l’entraîneur responsable.  */
 
+	-- 5. Voir à quelles heures sont les cours avec qui ont un entraineur
 	go
 	create or alter function CoursDisponible(@Heure NVARCHAR(10))
 	returns table
@@ -158,42 +167,56 @@
 		where en.EntraineurID is not null  and format(TempsCours,'h tt') like @Heure
 	)
 	go
+
+	-- test
 	select * from  dbo.CoursDisponible('2 PM')
+
 
 -- DELETE --
 
-	-- Trigger qui enlève le cours --
+	-- Trigger qui Enlève l'entraineur dans tous les tables -- 
 	go 
-	create or alter trigger EnleverEntrainerAuCours
-	on EntraineurCours
-	after delete
+	create or alter trigger EnlverEntraineur
+	on Entraineur
+	instead of delete
 	as
-		set nocount on;
 	begin 
-		delete from  Cours
+		-- Supprime l'entraineur de la table de relation EntraineurCours
+		DELETE FROM EntraineurCours
+		WHERE EntraineurID IN (SELECT EntraineurID FROM deleted);
+
+		-- Modifie l'EntraineurID à null
+		update Cours
+		set EntraineurID  = null
 		where EntraineurID = (select EntraineurID from deleted) and  CoursID = (select CoursID from deleted)
-	end
 
-	go
-	create or alter procedure EnleverCoursTableRelation
-		@CoursID int,
-		@Entraineur int
-	as
-		set nocount on ;
-	begin
-		delete from EntraineurCours
-		where CoursID = @CoursID and EntraineurID = @Entraineur
+		DELETE FROM Entraineur
+		WHERE EntraineurID IN (SELECT EntraineurID FROM deleted);
 	end
 	go
 
-	exec EnleverCoursTableRelation 142,3
-	select * from EntraineurCours 
-	select * from Cours 
-
-	-- Enlever entraineur dan table entraineur -- 
-	select * from Entraineur
+	-- test delete
 	delete from Entraineur
-	where EntraineurID = 1
+	where EntraineurID = 9
 
-	-- SET null entraineur lorsque tu le delete de la table entraineur
-	select * from Cours
+
+	-- Trigger qui Enlève le cours dans tous les tables -- 
+	go 
+	create or alter trigger EnleverCours
+	on Cours
+	instead of delete
+	as
+	begin 
+		-- Supprimer le cours de la table de relation EntraineurCours
+		DELETE FROM EntraineurCours
+		WHERE CoursID IN (SELECT CoursID FROM deleted);
+
+		-- Supprime le cours de la table Cours
+		DELETE FROM Cours
+		WHERE CoursID IN (SELECT CoursID FROM deleted);
+	end
+	go
+
+	-- test delete
+	delete from Cours
+	where CoursID = 1
