@@ -1,3 +1,7 @@
+--- Fichier avec les requets , traitement automatise et chiffrement / hachage Xavier --
+
+
+
 USE GYM
 GO
 --- Requetes 1 Xavier:
@@ -150,39 +154,38 @@ WHERE EntraineurID = (
 ----- chiffrement et hachage ------
 -- chiffrement et hachage de CarteCredit ---
 
--- ===========================
--- 1️⃣ Ajouter la colonne chiffrée CarteCredit
--- ===========================
+
+-- Ajout d'une colone pour mettre les donné
 ALTER TABLE Membres
 ADD CarteCredit VARBINARY(MAX);
 GO
 
--- ===========================
--- 2️⃣ Ajouter une colonne temporaire pour stocker le numéro en clair
--- ===========================
+
+--Ajouter une colonne temporaire pour stocker le numéro en clair
+
 ALTER TABLE Membres
 ADD CarteCreditClair NVARCHAR(20);
 GO
 
--- ===========================
--- 3️⃣ Générer un numéro aléatoire simple (8 chiffres)
--- ===========================
+------- Généré des nombres aléatoire pour faire le numéro de carte de crédit -- - Fait pas Chatgpt --
+
 UPDATE Membres
 SET CarteCreditClair = RIGHT('00000000' + CAST(ABS(CHECKSUM(NEWID())) % 100000000 AS NVARCHAR(8)), 8);
 GO
+----
 
--- ===========================
--- 4️⃣ Créer la Master Key si elle n'existe pas
--- ===========================
+
+--- Créer la Master Key
+
 IF NOT EXISTS (SELECT * FROM sys.symmetric_keys WHERE name = '##MS_DatabaseMasterKey##')
 BEGIN
-    CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'MotDePasseTrèsFort123!';
+    CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'Password1';
 END
 GO
 
--- ===========================
--- 5️⃣ Créer la clé asymétrique si elle n'existe pas
--- ===========================
+
+-- Créer la clé asymétrique
+
 IF NOT EXISTS (SELECT * FROM sys.asymmetric_keys WHERE name = 'CarteCreditKEK')
 BEGIN
     CREATE ASYMMETRIC KEY CarteCreditKEK
@@ -190,9 +193,9 @@ BEGIN
 END
 GO
 
--- ===========================
--- 6️⃣ Créer la clé symétrique si elle n'existe pas
--- ===========================
+
+--  Créer la clé symétrique
+
 IF NOT EXISTS (SELECT * FROM sys.symmetric_keys WHERE name = 'CarteCreditKey')
 BEGIN
     CREATE SYMMETRIC KEY CarteCreditKey
@@ -201,9 +204,8 @@ BEGIN
 END
 GO
 
--- ===========================
--- 7️⃣ Ouvrir la clé et chiffrer la colonne temporaire
--- ===========================
+
+-- chiffré la colonne temporaire --
 OPEN SYMMETRIC KEY CarteCreditKey
 DECRYPTION BY ASYMMETRIC KEY CarteCreditKEK;
 GO
@@ -218,9 +220,9 @@ GO
 CLOSE SYMMETRIC KEY CarteCreditKey;
 GO
 
--- ===========================
--- 8️⃣ Supprimer la colonne temporaire en clair
--- ===========================
+
+--  Supprimer la colonne temporaire en clair
+
 ALTER TABLE Membres
 DROP COLUMN CarteCreditClair;
 GO
@@ -257,19 +259,18 @@ BEGIN
 
     DECLARE @NumeroCarte NVARCHAR(20);
 
-    -- 1️⃣ Générer un numéro aléatoire simple (8 chiffres)
+    -- Générer un numéro aléatoire simple (8 chiffres) ( utilisé la même chose donné par chatgpt pour le chifrement 
     SET @NumeroCarte = RIGHT('00000000' + CAST(ABS(CHECKSUM(NEWID())) % 100000000 AS NVARCHAR(8)), 8);
 
-    -- 2️⃣ Ouvrir la clé symétrique
+ 
     OPEN SYMMETRIC KEY CarteCreditKey
     DECRYPTION BY ASYMMETRIC KEY CarteCreditKEK;
 
-    -- 3️⃣ Insérer le membre et chiffrer directement le numéro
+
     INSERT INTO Membres (Nom,NomFamille, CarteCredit)
     VALUES (@Nom, @NomFamille, EncryptByKey(Key_GUID('CarteCreditKey'), CONVERT(VARBINARY(MAX), @NumeroCarte)));
-
-    -- 4️⃣ Fermer la clé
     CLOSE SYMMETRIC KEY CarteCreditKey;
+
 END
 GO
 
