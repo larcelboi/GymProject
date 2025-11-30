@@ -15,20 +15,20 @@ Nos table seront :<br>
 
 
 <H2>Requetes Larcel</H2><br>
-  1. Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours
-    Explication :  Les administrateurs ont besoin que chaque fois qu’un cours est modifié, 
-		l’assignation entraîneur–cours soit automatiquement enregistrée dans la table de relation.
-  2. procedure qui  permet à l'entraineur de réserver un cours
-     Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique.
-  4. Trouver le cours le plus populaire
-     Explication : La direction doit savoir quels cours
-		  sont les plus réservés, afin de mieux planifier les horaires et les ressources.
-  5. Requête quel entraineur réserve quel cours
-     Explication : L’administration doit pouvoir consulter facilement 
-		 toutes les réservations faites par les entraîneurs.
-  6. Voir à quelles heures sont les cours avec qui ont un entraineur
-     Explication : Les utilisateurs veulent voir quel cours commence à
-		 une heure donnée, avec l’entraîneur responsable.
+  1. Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours<br>
+    Explication :  Les administrateurs ont besoin que chaque fois qu’un cours est modifié, <br>
+	l’assignation entraîneur–cours soit automatiquement enregistrée dans la table de relation.<br>
+  2. procedure qui  permet à l'entraineur de réserver un cours<br>
+     Explication : Les entraîneurs doivent pouvoir être assignés à un cours spécifique.<br>
+  4. Trouver le cours le plus populaire<br>
+     Explication : La direction doit savoir quels cours<br>
+		  sont les plus réservés, afin de mieux planifier les horaires et les ressources.<br>
+  5. Requête quel entraineur réserve quel cours<br>
+     Explication : L’administration doit pouvoir consulter facilement <br>
+		 toutes les réservations faites par les entraîneurs.<br>
+  6. Voir à quelles heures sont les cours avec qui ont un entraineur<br>
+     Explication : Les utilisateurs veulent voir quel cours commence à<br>
+	 une heure donnée, avec l’entraîneur responsable.<br>
 
 <H2>Planification Sauvegarder/Restaurer</H2><br>
 
