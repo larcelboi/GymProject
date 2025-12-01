@@ -131,8 +131,6 @@
 	select * from EntraineurCours
 	select * from Cours 
 
-
-
 	-- Trigger qui Enlève le cours dans tous les tables -- 
 	go 
 	create or alter trigger EnleverCours
@@ -150,14 +148,12 @@
 	end
 	go
 
-
 	-- test delete
 	delete from Cours
 	where CoursID = 20
 
 	select * from Cours
 	select * from EntraineurCours
-
 
 
 -- Hacher Salt -- 
