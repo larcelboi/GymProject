@@ -1,79 +1,5 @@
--- Hacher Salt -- 
-
-	-- Ajouter une colonne avec varbinary
-	alter table Entraineur
-	add DateNaisHacher varbinary(512) NULL;
-
-	-- Ajouter une colonne avec varbinary pour salt
-	alter table Entraineur
-	add salt varbinary(32) NULL;
-
-	-- LOOP qui vas hacher tous les dates de naissances dans la table -- 
-
-	-- declarer un compteur pour la loop et un @salt pour chiffrer -- 
-		declare @compteur int = 1;
-		declare @salt VARBINARY(32);
-
-		set @compteur = 0
-		while @compteur < 260
-		begin
-			set @compteur = @compteur + 1
-
-			set @salt = crypt_gen_random (32);
-
-			UPDATE Entraineur
-			SET salt = @salt,
-				DateNaisHacher = HASHBYTES('SHA2_512', CONCAT(DateNais, @salt))
-			WHERE EntraineurID = @compteur;
-		end
-
-	alter table entraineur
-	drop column salt
-
--- CHIFFREMENT --
-
-	-- Création de Master Key -- 
-	CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'PasswordDMK';
-
-	-- Création d'une asymetric key -- 
-	CREATE ASYMMETRIC KEY AsymEntraineurkey WITH ALGORITHM = RSA_2048
-
-	CREATE SYMMETRIC KEY EntraineurKey WITH ALGORITHM = AES_256
-	ENCRYPTION BY ASYMMETRIC KEY AsymEntraineurkey;
-
-	-- Aller chercher un ID d'une clé asym
-	SELECT ASYMKEY_ID('AsymEntraineurkey')
-
-	-- Aller chercher le ID d'une clé sym
-	SELECT Key_GUID('EntraineurKey')
-
-	-- Ajouter une colonne pour pemettre de chiffrer DateNais
-	alter table entraineur
-	add DateNaisChiffrer varbinary(8000) null;
-
-	 -- Chiffrer avec  une clé asym  -- ENCRYPTBYASYMKEY
-	UPDATE Entraineur
-	SET DateNaisChiffrer = ENCRYPTBYASYMKEY(
-        ASYMKEY_ID('EntraineurKey'),
-        CONVERT(varchar(50), DateNais) -- Convert la DateNais pour permettre le convert et le chiffrement
-    );
-
-	-- Chiffrer avec  une clé asym  -- EncryptByKey 
-	OPEN SYMMETRIC KEY EntraineurKey
-	DECRYPTION BY ASYMMETRIC KEY AsymEntraineurkey;
-
-	UPDATE Entraineur
-	SET DateNaisChiffrer = EncryptByKey(
-        Key_GUID('EntraineurKey'),
-        CONVERT(varchar(50), DateNais) -- Convert la DateNais pour permettre le convert et le chiffrement
-    );
-
-	-- test
-	select * from Entraineur
-
-
 -- REQUÊTE --
-
+	
 	-- 1. Trigger qui ajoute le cours et l'entraineur à la table EntraineurCours
 	go
 	create or alter TRIGGER  AjouterCourEntraineur
@@ -103,7 +29,8 @@
 
 	-- exec
 	exec UpdateCoursEntraineur 100,200
-
+	select * from EntraineurCours
+	select * from Cours where CoursID = 100
 	
 	-- 3. Procéure qui trouve le cours le plus populaire --
 	go
@@ -128,6 +55,7 @@
 	
 	-- exec
 	exec GénérerEntraineurC
+	select * from EntraineurCours
 	
 	-- test
 	select top 1 cours.NomDeCours,count(*) as 'Réservés'
@@ -169,7 +97,7 @@
 	go
 
 	-- test
-	select * from  dbo.CoursDisponible('2 PM')
+	select * from  dbo.CoursDisponible('3 PM')
 
 
 -- DELETE --
@@ -197,7 +125,12 @@
 
 	-- test delete
 	delete from Entraineur
-	where EntraineurID = 9
+	where EntraineurID = 1
+
+	select * from Entraineur
+	select * from EntraineurCours
+	select * from Cours 
+
 
 
 	-- Trigger qui Enlève le cours dans tous les tables -- 
@@ -220,4 +153,89 @@
 
 	-- test delete
 	delete from Cours
-	where CoursID = 1
+	where CoursID = 20
+
+	select * from Cours
+	select * from EntraineurCours
+
+
+
+-- Hacher Salt -- 
+
+
+	-- Ajouter une colonne avec varbinary
+	alter table Entraineur
+	add DateNaisHacher varbinary(512) NULL;
+
+	-- Ajouter une colonne avec varbinary pour salt
+	alter table Entraineur
+	add salt varbinary(32) NULL;
+
+	-- LOOP qui vas hacher tous les dates de naissances dans la table -- 
+
+		-- declarer un compteur pour la loop et un @salt pour chiffrer -- 
+		declare @compteur int = 1;
+		declare @salt VARBINARY(32);
+
+		set @compteur = 0
+		while @compteur < 260
+		begin
+			set @compteur = @compteur + 1
+
+			set @salt = crypt_gen_random (32);
+
+			UPDATE Entraineur
+			SET salt = @salt,
+				DateNaisHacher = HASHBYTES('SHA2_512', CONCAT(DateNais, @salt))
+			WHERE EntraineurID = @compteur;
+		end
+
+	-- Enlever la colonne salt 
+	alter table Entraineur
+	drop column salt
+
+	select * from Entraineur
+
+-- CHIFFREMENT --
+
+	-- Création de Master Key -- 
+	CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'PasswordDMK';
+
+	-- Création d'une asymetric key -- 
+	CREATE ASYMMETRIC KEY AsymEntraineurkey WITH ALGORITHM = RSA_2048
+
+	CREATE SYMMETRIC KEY EntraineurKey WITH ALGORITHM = AES_256
+	ENCRYPTION BY ASYMMETRIC KEY AsymEntraineurkey;
+
+	-- Aller chercher un ID d'une clé asym
+	SELECT ASYMKEY_ID('AsymEntraineurkey')
+
+	-- Aller chercher le ID d'une clé sym
+	SELECT Key_GUID('EntraineurKey')
+
+	-- Ajouter une colonne pour pemettre de chiffrer DateNais
+	alter table entraineur
+	add DateNaisChiffrer varbinary(8000) null;
+
+	 -- Chiffrer avec  une clé asym  -- ENCRYPTBYASYMKEY
+
+	UPDATE Entraineur
+	SET DateNaisChiffrer = ENCRYPTBYASYMKEY(
+        ASYMKEY_ID('AsymEntraineurkey'),
+        CONVERT(varchar(50), DateNais) -- Convert la DateNais pour permettre le convert et le chiffrement
+    );
+
+	select  * from Entraineur
+
+	-- Chiffrer avec  une clé asym  -- EncryptByKey 
+	OPEN SYMMETRIC KEY EntraineurKey
+	DECRYPTION BY ASYMMETRIC KEY AsymEntraineurkey;
+
+	UPDATE Entraineur
+	SET DateNaisChiffrer = EncryptByKey(
+        Key_GUID('EntraineurKey'),
+        CONVERT(varchar(50), DateNais) -- Convert la DateNais pour permettre le convert et le chiffrement
+    );
+
+	select  * from Entraineur
+
